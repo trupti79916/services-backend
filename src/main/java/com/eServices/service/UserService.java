@@ -4,6 +4,7 @@ import com.eServices.entity.User;
 import com.eServices.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,7 +54,9 @@ public class UserService {
         if (existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
-
+        // Hash the password before saving
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        user.setPasswordHash(encoder.encode(user.getPasswordHash()));
         return saveUser(user);
     }
 }
