@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,23 +64,31 @@ public class OrderController {
 
     @PostMapping("/orders")
     public ResponseEntity<?> createOrder(@Valid @RequestBody OrderRequest orderRequest) {
-        //should implement getting user ifd 
-        Long userId = 1L; 
-        
-        Optional<User> user = userService.getUserById(userId);
-        Optional<ServiceOffering> serviceOffering = serviceOfferingService.getServiceOfferingById(orderRequest.getServiceId());
-
-        if (user.isPresent() && serviceOffering.isPresent()) {
-            Order order = new Order();
-            order.setUser(user.get());
-            order.setServiceOffering(serviceOffering.get());
-            order.setScheduledDate(orderRequest.getScheduledDate());
+        try {
+            // Get authenticated user from SecurityContext
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+            }
             
-            Order savedOrder = orderService.saveOrder(order);
-            OrderResponse response = convertToOrderResponse(savedOrder);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } else {
-            return ResponseEntity.badRequest().body("User or service not found");
+            // The principal is the User entity itself (set in JwtAuthFilter)
+            User user = (User) authentication.getPrincipal();
+            Optional<ServiceOffering> serviceOffering = serviceOfferingService.getServiceOfferingById(orderRequest.getServiceId());
+
+            if (serviceOffering.isPresent()) {
+                Order order = new Order();
+                order.setUser(user);
+                order.setServiceOffering(serviceOffering.get());
+                order.setScheduledDate(orderRequest.getScheduledDate());
+                
+                Order savedOrder = orderService.saveOrder(order);
+                OrderResponse response = convertToOrderResponse(savedOrder);
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            } else {
+                return ResponseEntity.badRequest().body("Service not found");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error creating order: " + e.getMessage());
         }
     }
 

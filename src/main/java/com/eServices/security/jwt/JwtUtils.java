@@ -3,6 +3,7 @@ package com.eServices.security.jwt;
 import java.security.Key;
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.JwtException;
@@ -12,8 +13,11 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtils {
-    private final String jwtSecret = "eServicesSecretKeyForJwtTokenGeneration1234567890";
-    private final long jwtExpirationMs = 86400000;// 1 day// Default: 1 day
+    @Value("${app.jwt.secret}")
+    private String jwtSecret;
+    
+    @Value("${app.jwt.expiration}")
+    private long jwtExpirationMs;
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());
