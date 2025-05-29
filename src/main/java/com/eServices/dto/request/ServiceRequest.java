@@ -1,85 +1,41 @@
-package com.eServices.entity;
+package com.eServices.dto.request;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import jakarta.persistence.CollectionTable;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Table;
-import lombok.Getter;
-import lombok.Setter;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
-@Getter
-@Setter
-@Entity
-@Table(name = "service_offerings")
-public class ServiceOffering {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "service_id")
-    private Long serviceId;
-
-    @Column(length = 100, nullable = false)
+public class ServiceRequest {
+    @NotBlank(message = "Service name is required")
     private String serviceName;
 
-    @Column(length = 500)
     private String description;
 
-    @Column(length = 100)
+    @NotBlank(message = "Category is required")
     private String category;
 
-    @Column(precision = 10, scale = 2)
+    @NotNull(message = "Cost is required")
+    @Positive(message = "Cost must be positive")
     private BigDecimal cost;
 
-    @Column(length = 100)
+    @NotBlank(message = "Location is required")
     private String location;
 
-    @Column(length = 100)
     private String contact;
-
-    @Column(length = 500)
     private String image;
-
-    @Column(precision = 3, scale = 2)
-    private BigDecimal rating = BigDecimal.valueOf(0.0);
-
-    @Column
-    private Integer reviewCount = 0;
-
-    @ElementCollection
-    @CollectionTable(name = "service_features", joinColumns = @JoinColumn(name = "service_id"))
-    @Column(name = "feature")
     private List<String> features;
 
-    // Provider information
-    @Column(length = 100)
+    @NotBlank(message = "Provider name is required")
     private String providerName;
 
-    @Column(length = 500)
     private String providerAvatar;
 
-    @Column(length = 15)
+    @NotBlank(message = "Phone is required")
     private String phone;
 
-    // Constructors
-    public ServiceOffering() {
-    }
-
-    // Getters and Setters
-    public Long getServiceId() {
-        return serviceId;
-    }
-
-    public void setServiceId(Long serviceId) {
-        this.serviceId = serviceId;
-    }
+    public ServiceRequest() {}
 
     public String getServiceName() {
         return serviceName;
@@ -137,22 +93,6 @@ public class ServiceOffering {
         this.image = image;
     }
 
-    public BigDecimal getRating() {
-        return rating;
-    }
-
-    public void setRating(BigDecimal rating) {
-        this.rating = rating;
-    }
-
-    public Integer getReviewCount() {
-        return reviewCount;
-    }
-
-    public void setReviewCount(Integer reviewCount) {
-        this.reviewCount = reviewCount;
-    }
-
     public List<String> getFeatures() {
         return features;
     }
@@ -184,4 +124,4 @@ public class ServiceOffering {
     public void setPhone(String phone) {
         this.phone = phone;
     }
-}
+} 

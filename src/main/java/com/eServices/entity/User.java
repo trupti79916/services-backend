@@ -1,11 +1,16 @@
 package com.eServices.entity;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -30,6 +35,22 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private UserRole role;
+
+    // Address information
+    @Column(length = 200)
+    private String street;
+
+    @Column(length = 100)
+    private String city;
+
+    @Column(length = 100)
+    private String state;
+
+    @Column(length = 20)
+    private String zipCode;
+
+    @Column(length = 100)
+    private String country;
 
     // Enum for user roles
     public enum UserRole {
@@ -79,6 +100,46 @@ public class User {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
     }
 }
 

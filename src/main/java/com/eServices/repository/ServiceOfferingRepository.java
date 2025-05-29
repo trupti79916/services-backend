@@ -1,10 +1,12 @@
 package com.eServices.repository;
 
-import com.eServices.entity.ServiceOffering;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import com.eServices.entity.ServiceOffering;
 
 @Repository
 public interface ServiceOfferingRepository extends JpaRepository<ServiceOffering, Long> {
@@ -13,4 +15,7 @@ public interface ServiceOfferingRepository extends JpaRepository<ServiceOffering
     List<ServiceOffering> findByCostLessThanEqual(BigDecimal maxCost);
     List<ServiceOffering> findByCategoryAndLocationAndCostLessThanEqual(
             String category, String location, BigDecimal maxCost);
+    
+    List<ServiceOffering> findByServiceNameContainingIgnoreCase(String serviceName);
+    List<ServiceOffering> findByCategoryAndLocation(String category, String location);
 }

@@ -1,10 +1,19 @@
 package com.eServices.entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -27,6 +36,9 @@ public class Order {
 
     @Column(nullable = false)
     private LocalDateTime orderDate;
+
+    @Column
+    private LocalDateTime scheduledDate;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -74,6 +86,14 @@ public class Order {
 
     public void setOrderDate(LocalDateTime orderDate) {
         this.orderDate = orderDate;
+    }
+
+    public LocalDateTime getScheduledDate() {
+        return scheduledDate;
+    }
+
+    public void setScheduledDate(LocalDateTime scheduledDate) {
+        this.scheduledDate = scheduledDate;
     }
 
     public OrderStatus getStatus() {

@@ -1,16 +1,19 @@
 package com.eServices.security.jwt;
 
-import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.Date;
+
+import org.springframework.stereotype.Component;
+
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtils {
     private final String jwtSecret = "eServicesSecretKeyForJwtTokenGeneration1234567890";
-    private final long jwtExpirationMs = 86400000; // 1 day
+    private final long jwtExpirationMs = 86400000;// 1 day// Default: 1 day
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes());

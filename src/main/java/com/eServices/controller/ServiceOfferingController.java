@@ -1,82 +1,74 @@
 package com.eServices.controller;
 
-import com.eServices.entity.ServiceOffering;
-import com.eServices.service.ServiceOfferingService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.eServices.dto.request.ServiceRequest;
+import com.eServices.dto.response.ServiceResponse;
+import com.eServices.service.ServiceOfferingService;
+
+import jakarta.validation.Valid;
+
 @RestController
-@RequestMapping("/api/services")
+@RequestMapping("/api")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ServiceOfferingController {
 
-    private final ServiceOfferingService serviceOfferingService;
-
     @Autowired
-    public ServiceOfferingController(ServiceOfferingService serviceOfferingService) {
-        this.serviceOfferingService = serviceOfferingService;
+    private ServiceOfferingService serviceOfferingService;
+
+    @GetMapping("/services")
+    public ResponseEntity<List<ServiceResponse>> getAllServices() {
+        List<ServiceResponse> services = serviceOfferingService.getAllServices();
+        return ResponseEntity.ok(services);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ServiceOffering>> getAllServiceOfferings() {
-        return ResponseEntity.ok(serviceOfferingService.getAllServiceOfferings());
+    @GetMapping("/services/{id}")
+    public ResponseEntity<ServiceResponse> getServiceById(@PathVariable Long id) {
+        Optional<ServiceResponse> service = serviceOfferingService.getServiceById(id);
+        return service.map(ResponseEntity::ok)
+                     .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ServiceOffering> getServiceOfferingById(@PathVariable Long id) {
-        Optional<ServiceOffering> serviceOffering = serviceOfferingService.getServiceOfferingById(id);
-        return serviceOffering.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+    @PostMapping("/services")
+    public ResponseEntity<ServiceResponse> createService(@Valid @RequestBody ServiceRequest serviceRequest) {
+        ServiceResponse createdService = serviceOfferingService.createService(serviceRequest);
+        return ResponseEntity.ok(createdService);
     }
 
-    @PostMapping
-    public ResponseEntity<ServiceOffering> createServiceOffering(@RequestBody ServiceOffering serviceOffering) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(serviceOfferingService.saveServiceOffering(serviceOffering));
+    @PutMapping("/services/{id}")
+    public ResponseEntity<ServiceResponse> updateService(@PathVariable Long id, 
+                                                        @Valid @RequestBody ServiceRequest serviceRequest) {
+        Optional<ServiceResponse> updatedService = serviceOfferingService.updateService(id, serviceRequest);
+        return updatedService.map(ResponseEntity::ok)
+                            .orElse(ResponseEntity.notFound().build());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<ServiceOffering> updateServiceOffering(
-            @PathVariable Long id, @RequestBody ServiceOffering serviceOffering) {
-        Optional<ServiceOffering> existingServiceOffering = serviceOfferingService.getServiceOfferingById(id);
-        if (existingServiceOffering.isPresent()) {
-            serviceOffering.setServiceId(id);
-            return ResponseEntity.ok(serviceOfferingService.saveServiceOffering(serviceOffering));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @DeleteMapping("/services/{id}")
+    public ResponseEntity<Void> deleteService(@PathVariable Long id) {
+        boolean deleted = serviceOfferingService.deleteService(id);
+        return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteServiceOffering(@PathVariable Long id) {
-        Optional<ServiceOffering> existingServiceOffering = serviceOfferingService.getServiceOfferingById(id);
-        if (existingServiceOffering.isPresent()) {
-            serviceOfferingService.deleteServiceOffering(id);
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<List<ServiceOffering>> searchServiceOfferings(
-            @RequestParam(required = false) String category,
+    @GetMapping("/services/search")
+    public ResponseEntity<List<ServiceResponse>> searchServices(
             @RequestParam(required = false) String location,
-            @RequestParam(required = false) BigDecimal maxCost) {
-        return ResponseEntity.ok(serviceOfferingService.findByFilters(category, location, maxCost));
-    }
-
-    @GetMapping("/category/{category}")
-    public ResponseEntity<List<ServiceOffering>> getServiceOfferingsByCategory(@PathVariable String category) {
-        return ResponseEntity.ok(serviceOfferingService.findByCategory(category));
-    }
-
-    @GetMapping("/location/{location}")
-    public ResponseEntity<List<ServiceOffering>> getServiceOfferingsByLocation(@PathVariable String location) {
-        return ResponseEntity.ok(serviceOfferingService.findByLocation(location));
+            @RequestParam(required = false) String category,
+            @RequestParam(required = false) String name) {
+        List<ServiceResponse> services = serviceOfferingService.searchServices(location, category, name);
+        return ResponseEntity.ok(services);
     }
 }
