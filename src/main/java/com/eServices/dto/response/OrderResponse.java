@@ -13,12 +13,13 @@ public class OrderResponse {
     private LocalDateTime orderDate;
     private LocalDateTime scheduledDate;
     private ServiceResponse service;
+    private Boolean isReviewed;
 
     // Constructors
     public OrderResponse() {}
 
     public OrderResponse(Long id, Long userId, Long serviceId, Integer rating, OrderStatus status,
-                        LocalDateTime orderDate, LocalDateTime scheduledDate, ServiceResponse service) {
+                        LocalDateTime orderDate, LocalDateTime scheduledDate, ServiceResponse service, Boolean isReviewed) {
         this.id = id;
         this.userId = userId;
         this.serviceId = serviceId;
@@ -27,6 +28,7 @@ public class OrderResponse {
         this.orderDate = orderDate;
         this.scheduledDate = scheduledDate;
         this.service = service;
+        this.isReviewed = isReviewed;
     }
 
     // Getters and Setters
@@ -92,5 +94,13 @@ public class OrderResponse {
 
     public void setService(ServiceResponse service) {
         this.service = service;
+    }
+
+    public Boolean getIsReviewed() {
+        return isReviewed;
+    }
+
+    public void setIsReviewed(Boolean isReviewed) {
+        this.isReviewed = isReviewed;
     }
 } 

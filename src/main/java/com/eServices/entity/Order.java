@@ -44,6 +44,12 @@ public class Order {
     @Column(nullable = false)
     private OrderStatus status;
 
+    @Column
+    private Boolean isReviewed = false;
+
+    @Column
+    private Integer rating;
+
     // Enum for order status
     public enum OrderStatus {
         PENDING, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED
@@ -102,5 +108,21 @@ public class Order {
 
     public void setStatus(OrderStatus status) {
         this.status = status;
+    }
+
+    public Boolean getIsReviewed() {
+        return isReviewed;
+    }
+
+    public void setIsReviewed(Boolean isReviewed) {
+        this.isReviewed = isReviewed;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 }

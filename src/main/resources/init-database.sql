@@ -24,11 +24,8 @@ CREATE TABLE users (
     email VARCHAR(100) NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     role ENUM('ADMIN', 'USER') NOT NULL,
-    street VARCHAR(200),
-    city VARCHAR(100),
-    state VARCHAR(100),
-    zip_code VARCHAR(20),
-    country VARCHAR(100)
+    address VARCHAR(300),
+    city VARCHAR(100)
 );
 
 -- ============================================
@@ -69,6 +66,8 @@ CREATE TABLE orders (
     order_date DATETIME NOT NULL,
     scheduled_date DATETIME,
     status ENUM('PENDING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED') NOT NULL DEFAULT 'PENDING',
+    is_reviewed BOOLEAN DEFAULT FALSE,
+    rating INT,
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
     FOREIGN KEY (service_id) REFERENCES service_offerings(service_id) ON DELETE CASCADE
 );
@@ -76,9 +75,9 @@ CREATE TABLE orders (
 -- ============================================
 -- Insert Sample Users
 -- ============================================
-INSERT INTO users (user_id, username, email, password_hash, role, street, city, state, zip_code, country) VALUES
-(1, 'admin', 'admin@example.com', '$2a$10$O5pFjq8dPIytI2nG7Rl/1uLtlemR11LJTuF0IZBR6Rar5FXkUaxkC', 'ADMIN', '123 Admin Street', 'Mumbai', 'Maharashtra', '400001', 'India'),
-(2, 'johndoe', 'user@example.com', '$2a$10$e.l6HVPyEDQBPnqwvwjP2OCtREqLD1gUeA5G5/rM8drpDokLg6L5u', 'USER', '456 User Avenue', 'Delhi', 'Delhi', '110001', 'India');
+INSERT INTO users (user_id, username, email, password_hash, role, address, city) VALUES
+(1, 'admin', 'admin@example.com', '$2a$10$O5pFjq8dPIytI2nG7Rl/1uLtlemR11LJTuF0IZBR6Rar5FXkUaxkC', 'ADMIN', '123 Admin Street, Mumbai, Maharashtra, 400001, India', 'Mumbai'),
+(2, 'johndoe', 'user@example.com', '$2a$10$e.l6HVPyEDQBPnqwvwjP2OCtREqLD1gUeA5G5/rM8drpDokLg6L5u', 'USER', '456 User Avenue, Delhi, Delhi, 110001, India', 'Delhi');
 
 -- ============================================
 -- Insert Sample Service Offerings
@@ -172,11 +171,11 @@ INSERT INTO service_features (service_id, feature) VALUES
 -- ============================================
 -- Insert Sample Orders
 -- ============================================
-INSERT INTO orders (order_id, user_id, service_id, order_date, scheduled_date, status) VALUES
-(1, 2, 1, '2024-01-15 10:30:00', '2024-01-20 09:00:00', 'COMPLETED'),
-(2, 2, 3, '2024-01-10 14:15:00', '2024-01-25 11:00:00', 'IN_PROGRESS'),
-(3, 1, 2, '2024-01-05 16:45:00', '2024-01-30 08:30:00', 'PENDING'),
-(4, 2, 9, '2024-01-15 00:00:00', '2024-01-20 00:00:00', 'COMPLETED');
+INSERT INTO orders (order_id, user_id, service_id, order_date, scheduled_date, status, is_reviewed, rating) VALUES
+(1, 2, 1, '2024-01-15 10:30:00', '2024-01-20 09:00:00', 'COMPLETED', TRUE, 5),
+(2, 2, 3, '2024-01-10 14:15:00', '2024-01-25 11:00:00', 'IN_PROGRESS', FALSE, NULL),
+(3, 1, 2, '2024-01-05 16:45:00', '2024-01-30 08:30:00', 'PENDING', FALSE, NULL),
+(4, 2, 9, '2024-01-15 00:00:00', '2024-01-20 00:00:00', 'COMPLETED', TRUE, 4);
 
 -- ============================================
 -- Display Success Message

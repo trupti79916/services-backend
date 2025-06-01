@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eServices.dto.request.UserRegistrationRequest;
+import com.eServices.dto.request.UpdateAddressRequest;
 import com.eServices.dto.response.UserResponse;
 import com.eServices.entity.User;
 import com.eServices.service.UserService;
@@ -92,17 +93,27 @@ public class UserController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PutMapping("/users/{id}/address")
+    public ResponseEntity<UserResponse> updateUserAddress(@PathVariable Long id, @RequestBody UpdateAddressRequest request) {
+        Optional<User> existingUser = userService.getUserById(id);
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+            user.setAddress(request.getAddress());
+            User updatedUser = userService.saveUser(user);
+            UserResponse response = convertToUserResponse(updatedUser);
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     // Conversion methods
     private UserResponse convertToUserResponse(User user) {
         UserResponse.AddressResponse address = null;
-        if (user.getStreet() != null || user.getCity() != null || user.getState() != null || 
-            user.getZipCode() != null || user.getCountry() != null) {
+        if (user.getAddress() != null || user.getCity() != null) {
             address = new UserResponse.AddressResponse(
-                user.getStreet(),
-                user.getCity(),
-                user.getState(),
-                user.getZipCode(),
-                user.getCountry()
+                user.getAddress(),
+                user.getCity()
             );
         }
 
@@ -121,11 +132,8 @@ public class UserController {
         user.setEmail(request.getEmail());
         user.setPasswordHash(request.getPassword()); // Will be hashed in service
         user.setRole(User.UserRole.valueOf(request.getRole().toUpperCase()));
-        user.setStreet(request.getStreet());
+        user.setAddress(null); // Initially set to null during signup
         user.setCity(request.getCity());
-        user.setState(request.getState());
-        user.setZipCode(request.getZipCode());
-        user.setCountry(request.getCountry());
         return user;
     }
 }

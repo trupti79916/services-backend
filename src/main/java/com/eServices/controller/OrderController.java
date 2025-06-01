@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eServices.dto.request.OrderRequest;
+import com.eServices.dto.request.RatingRequest;
 import com.eServices.dto.response.OrderResponse;
 import com.eServices.dto.response.ServiceResponse;
 import com.eServices.entity.Order;
@@ -179,6 +180,72 @@ public class OrderController {
         }
     }
 
+    @PutMapping("/orders/{id}/rating")
+    public ResponseEntity<?> rateOrder(@PathVariable Long id, @Valid @RequestBody RatingRequest ratingRequest) {
+        try {
+            // Get authenticated user from SecurityContext
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null || !authentication.isAuthenticated()) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
+            }
+            
+            User user = (User) authentication.getPrincipal();
+            Optional<Order> orderOpt = orderService.getOrderById(id);
+            
+            if (!orderOpt.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            Order order = orderOpt.get();
+            
+            // Check if the order belongs to the authenticated user
+            if (!order.getUser().getUserId().equals(user.getUserId())) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only rate your own orders");
+            }
+            
+            // Check if order is already reviewed
+            if (order.getIsReviewed()) {
+                return ResponseEntity.badRequest().body("Order has already been reviewed");
+            }
+            
+            // Check if order is completed
+            if (order.getStatus() != Order.OrderStatus.COMPLETED) {
+                return ResponseEntity.badRequest().body("You can only rate completed orders");
+            }
+            
+            // Update order with rating
+            order.setRating(ratingRequest.getRating());
+            order.setIsReviewed(true);
+            
+            // Update service offering rating
+            ServiceOffering service = order.getServiceOffering();
+            updateServiceRating(service, ratingRequest.getRating());
+            
+            Order updatedOrder = orderService.saveOrder(order);
+            OrderResponse response = convertToOrderResponse(updatedOrder);
+            return ResponseEntity.ok(response);
+            
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error rating order: " + e.getMessage());
+        }
+    }
+    
+    private void updateServiceRating(ServiceOffering service, Integer newRating) {
+        // Calculate new average rating
+        java.math.BigDecimal currentRating = service.getRating();
+        Integer currentReviewCount = service.getReviewCount();
+        
+        // Calculate new rating: (currentRating * currentReviewCount + newRating) / (currentReviewCount + 1)
+        java.math.BigDecimal totalRating = currentRating.multiply(java.math.BigDecimal.valueOf(currentReviewCount))
+                .add(java.math.BigDecimal.valueOf(newRating));
+        Integer newReviewCount = currentReviewCount + 1;
+        java.math.BigDecimal newAverageRating = totalRating.divide(java.math.BigDecimal.valueOf(newReviewCount), 2, java.math.RoundingMode.HALF_UP);
+        
+        service.setRating(newAverageRating);
+        service.setReviewCount(newReviewCount);
+        serviceOfferingService.saveServiceOffering(service);
+    }
+
     // Conversion method
     private OrderResponse convertToOrderResponse(Order order) {
         ServiceResponse.ProviderResponse provider = new ServiceResponse.ProviderResponse(
@@ -206,11 +273,12 @@ public class OrderController {
             order.getOrderId(),
             order.getUser().getUserId(),
             order.getServiceOffering().getServiceId(),
-            null, // rating from feedback, not order
+            order.getRating(), // Use order's rating
             order.getStatus(),
             order.getOrderDate(),
             order.getScheduledDate(),
-            serviceResponse
+            serviceResponse,
+            order.getIsReviewed()
         );
     }
 }

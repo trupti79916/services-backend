@@ -36,21 +36,12 @@ public class User {
     @Column(nullable = false)
     private UserRole role;
 
-    // Address information
-    @Column(length = 200)
-    private String street;
+    // Simplified address information
+    @Column(length = 300)
+    private String address;
 
     @Column(length = 100)
     private String city;
-
-    @Column(length = 100)
-    private String state;
-
-    @Column(length = 20)
-    private String zipCode;
-
-    @Column(length = 100)
-    private String country;
 
     // Enum for user roles
     public enum UserRole {
@@ -102,12 +93,12 @@ public class User {
         this.role = role;
     }
 
-    public String getStreet() {
-        return street;
+    public String getAddress() {
+        return address;
     }
 
-    public void setStreet(String street) {
-        this.street = street;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getCity() {
@@ -116,30 +107,6 @@ public class User {
 
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getZipCode() {
-        return zipCode;
-    }
-
-    public void setZipCode(String zipCode) {
-        this.zipCode = zipCode;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 }
 
