@@ -265,6 +265,7 @@ public class OrderController {
             order.getServiceOffering().getCategory(),
             order.getServiceOffering().getImage(),
             order.getServiceOffering().getPhone(),
+            order.getServiceOffering().getContact(),
             order.getServiceOffering().getFeatures(),
             provider
         );

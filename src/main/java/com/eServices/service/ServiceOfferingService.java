@@ -41,6 +41,7 @@ public class ServiceOfferingService {
             serviceOffering.getCategory(),
             serviceOffering.getImage(),
             serviceOffering.getPhone(),
+            serviceOffering.getContact(),
             serviceOffering.getFeatures(),
             provider
         );

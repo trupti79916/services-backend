@@ -14,6 +14,7 @@ public class ServiceResponse {
     private String type;
     private String image;
     private String phone;
+    private String contact;
     private List<String> features;
     private ProviderResponse provider;
 
@@ -22,7 +23,7 @@ public class ServiceResponse {
 
     public ServiceResponse(Long id, String name, String description, BigDecimal price, 
                           BigDecimal rating, Integer reviews, String location, String type, 
-                          String image, String phone, List<String> features, ProviderResponse provider) {
+                          String image, String phone, String contact, List<String> features, ProviderResponse provider) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -33,6 +34,7 @@ public class ServiceResponse {
         this.type = type;
         this.image = image;
         this.phone = phone;
+        this.contact = contact;
         this.features = features;
         this.provider = provider;
     }
@@ -116,6 +118,14 @@ public class ServiceResponse {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
     }
 
     public List<String> getFeatures() {
