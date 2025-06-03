@@ -66,13 +66,11 @@ public class OrderController {
     @PostMapping("/orders")
     public ResponseEntity<?> createOrder(@Valid @RequestBody OrderRequest orderRequest) {
         try {
-            // Get authenticated user from SecurityContext
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.isAuthenticated()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
             }
             
-            // The principal is the User entity itself (set in JwtAuthFilter)
             User user = (User) authentication.getPrincipal();
             Optional<ServiceOffering> serviceOffering = serviceOfferingService.getServiceOfferingById(orderRequest.getServiceId());
 
@@ -183,7 +181,6 @@ public class OrderController {
     @PutMapping("/orders/{id}/rating")
     public ResponseEntity<?> rateOrder(@PathVariable Long id, @Valid @RequestBody RatingRequest ratingRequest) {
         try {
-            // Get authenticated user from SecurityContext
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication == null || !authentication.isAuthenticated()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not authenticated");
@@ -198,26 +195,21 @@ public class OrderController {
             
             Order order = orderOpt.get();
             
-            // Check if the order belongs to the authenticated user
             if (!order.getUser().getUserId().equals(user.getUserId())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You can only rate your own orders");
             }
             
-            // Check if order is already reviewed
             if (order.getIsReviewed()) {
                 return ResponseEntity.badRequest().body("Order has already been reviewed");
             }
             
-            // Check if order is completed
             if (order.getStatus() != Order.OrderStatus.COMPLETED) {
                 return ResponseEntity.badRequest().body("You can only rate completed orders");
             }
             
-            // Update order with rating
             order.setRating(ratingRequest.getRating());
             order.setIsReviewed(true);
             
-            // Update service offering rating
             ServiceOffering service = order.getServiceOffering();
             updateServiceRating(service, ratingRequest.getRating());
             
@@ -231,11 +223,9 @@ public class OrderController {
     }
     
     private void updateServiceRating(ServiceOffering service, Integer newRating) {
-        // Calculate new average rating
         java.math.BigDecimal currentRating = service.getRating();
         Integer currentReviewCount = service.getReviewCount();
         
-        // Calculate new rating: (currentRating * currentReviewCount + newRating) / (currentReviewCount + 1)
         java.math.BigDecimal totalRating = currentRating.multiply(java.math.BigDecimal.valueOf(currentReviewCount))
                 .add(java.math.BigDecimal.valueOf(newRating));
         Integer newReviewCount = currentReviewCount + 1;
@@ -246,7 +236,6 @@ public class OrderController {
         serviceOfferingService.saveServiceOffering(service);
     }
 
-    // Conversion method
     private OrderResponse convertToOrderResponse(Order order) {
         ServiceResponse.ProviderResponse provider = new ServiceResponse.ProviderResponse(
             order.getServiceOffering().getServiceId().toString(),
@@ -274,7 +263,7 @@ public class OrderController {
             order.getOrderId(),
             order.getUser().getUserId(),
             order.getServiceOffering().getServiceId(),
-            order.getRating(), // Use order's rating
+            order.getRating(), 
             order.getStatus(),
             order.getOrderDate(),
             order.getScheduledDate(),

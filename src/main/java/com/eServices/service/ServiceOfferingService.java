@@ -139,7 +139,6 @@ public class ServiceOfferingService {
                 .collect(Collectors.toList());
     }
 
-    // Legacy methods for backwards compatibility
     public List<ServiceOffering> getAllServiceOfferings() {
         return serviceOfferingRepository.findAll();
     }

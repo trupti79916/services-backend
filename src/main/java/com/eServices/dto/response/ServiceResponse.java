@@ -18,7 +18,6 @@ public class ServiceResponse {
     private List<String> features;
     private ProviderResponse provider;
 
-    // Constructors
     public ServiceResponse() {}
 
     public ServiceResponse(Long id, String name, String description, BigDecimal price, 
@@ -39,7 +38,6 @@ public class ServiceResponse {
         this.provider = provider;
     }
 
-    // Getters and Setters
     public Long getId() {
         return id;
     }
@@ -144,7 +142,6 @@ public class ServiceResponse {
         this.provider = provider;
     }
 
-    // Inner class for Provider
     public static class ProviderResponse {
         private String id;
         private String name;

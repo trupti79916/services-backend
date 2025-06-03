@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eServices.dto.request.UserRegistrationRequest;
 import com.eServices.dto.request.UpdateAddressRequest;
+import com.eServices.dto.request.UserRegistrationRequest;
 import com.eServices.dto.response.UserResponse;
 import com.eServices.entity.User;
 import com.eServices.service.UserService;
@@ -107,7 +107,6 @@ public class UserController {
         }
     }
 
-    // Conversion methods
     private UserResponse convertToUserResponse(User user) {
         UserResponse.AddressResponse address = null;
         if (user.getAddress() != null || user.getCity() != null) {
@@ -130,9 +129,9 @@ public class UserController {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPasswordHash(request.getPassword()); // Will be hashed in service
+        user.setPasswordHash(request.getPassword()); 
         user.setRole(User.UserRole.valueOf(request.getRole().toUpperCase()));
-        user.setAddress(null); // Initially set to null during signup
+        user.setAddress(null); 
         user.setCity(request.getCity());
         return user;
     }

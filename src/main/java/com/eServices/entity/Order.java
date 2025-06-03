@@ -50,79 +50,12 @@ public class Order {
     @Column
     private Integer rating;
 
-    // Enum for order status
     public enum OrderStatus {
         PENDING, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED
     }
 
-    // Constructors
     public Order() {
         this.orderDate = LocalDateTime.now();
         this.status = OrderStatus.PENDING;
-    }
-
-    // Getters and Setters
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public ServiceOffering getServiceOffering() {
-        return serviceOffering;
-    }
-
-    public void setServiceOffering(ServiceOffering serviceOffering) {
-        this.serviceOffering = serviceOffering;
-    }
-
-    public LocalDateTime getOrderDate() {
-        return orderDate;
-    }
-
-    public void setOrderDate(LocalDateTime orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public LocalDateTime getScheduledDate() {
-        return scheduledDate;
-    }
-
-    public void setScheduledDate(LocalDateTime scheduledDate) {
-        this.scheduledDate = scheduledDate;
-    }
-
-    public OrderStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
-
-    public Boolean getIsReviewed() {
-        return isReviewed;
-    }
-
-    public void setIsReviewed(Boolean isReviewed) {
-        this.isReviewed = isReviewed;
-    }
-
-    public Integer getRating() {
-        return rating;
-    }
-
-    public void setRating(Integer rating) {
-        this.rating = rating;
     }
 }

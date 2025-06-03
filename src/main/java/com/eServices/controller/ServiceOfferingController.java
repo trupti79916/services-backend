@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.eServices.dto.request.ServiceRequest;
@@ -63,12 +62,4 @@ public class ServiceOfferingController {
         return deleted ? ResponseEntity.ok().build() : ResponseEntity.notFound().build();
     }
 
-    @GetMapping("/services/search")
-    public ResponseEntity<List<ServiceResponse>> searchServices(
-            @RequestParam(required = false) String location,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String name) {
-        List<ServiceResponse> services = serviceOfferingService.searchServices(location, category, name);
-        return ResponseEntity.ok(services);
-    }
 }

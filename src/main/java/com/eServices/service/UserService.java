@@ -52,7 +52,6 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    // This is a simple registration method, will be enhanced with security later
     public User registerUser(User user) {
         if (existsByUsername(user.getUsername())) {
             throw new RuntimeException("Username already exists");
@@ -60,7 +59,6 @@ public class UserService {
         if (existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already exists");
         }
-        // Hash the password before saving
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPasswordHash(encoder.encode(user.getPasswordHash()));
         return saveUser(user);
