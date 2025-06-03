@@ -12,7 +12,8 @@ import java.util.Optional;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-
+    @Autowired
+    private EmailService emailService;
     @Autowired
     public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
@@ -27,7 +28,15 @@ public class OrderService {
     }
 
     public Order saveOrder(Order order) {
-        return orderRepository.save(order);
+        boolean isNewOrder = (order.getOrderId() == null);
+        Order savedOrder = orderRepository.save(order);
+
+        // Send email notification to vendor only for new orders
+        if (isNewOrder) {
+            emailService.sendOrderNotificationToVendor(savedOrder);
+            System.out.println("Message sent");
+        }
+        return savedOrder;
     }
 
     public void deleteOrder(Long id) {
