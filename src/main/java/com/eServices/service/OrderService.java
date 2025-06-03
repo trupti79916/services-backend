@@ -33,7 +33,8 @@ public class OrderService {
 
         // Send email notification to vendor only for new orders
         if (isNewOrder) {
-            emailService.sendOrderNotificationToVendor(savedOrder);
+            System.out.println("Sending message to vendor "+ order.getServiceOffering().getContact());
+//            emailService.sendOrderNotificationToVendor(savedOrder);
             System.out.println("Message sent");
         }
         return savedOrder;

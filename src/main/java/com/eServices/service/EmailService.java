@@ -45,7 +45,7 @@ public class EmailService {
 
             message.setText(emailBody);
             message.setFrom("noreply@eservices.com"); // Configure this in application.properties
-            System.out.println("Sending message to vendor"+ order.getServiceOffering().getContact());
+
             mailSender.send(message);
 
         } catch (Exception e) {

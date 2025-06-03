@@ -130,7 +130,6 @@ public class ServiceOffering {
     }
 
     public String getImage() {
-        image = "https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80";
         return image;
     }
 
@@ -171,7 +170,6 @@ public class ServiceOffering {
     }
 
     public String getProviderAvatar() {
-        providerAvatar = "https://randomuser.me/api/portraits/lego/5.jpg";
         return providerAvatar;
     }
 

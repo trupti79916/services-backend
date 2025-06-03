@@ -55,10 +55,10 @@ public class ServiceOfferingService {
         serviceOffering.setCost(request.getCost());
         serviceOffering.setLocation(request.getLocation());
         serviceOffering.setContact(request.getContact());
-        serviceOffering.setImage(request.getImage());
+        serviceOffering.setImage("https://images.unsplash.com/photo-1581578731548-c64695cc6952?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80");
         serviceOffering.setFeatures(request.getFeatures());
         serviceOffering.setProviderName(request.getProviderName());
-        serviceOffering.setProviderAvatar(request.getProviderAvatar());
+        serviceOffering.setProviderAvatar("https://randomuser.me/api/portraits/lego/5.jpg");
         serviceOffering.setPhone(request.getPhone());
         return serviceOffering;
     }
